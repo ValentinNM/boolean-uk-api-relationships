@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+ id       Int        @id @default(autoincrement())
+ firstName  String   @db.VarChar(225)
+ lastName   String   @db.VarChar(225)
+ email    String     @unique
+ address  Address?
+ order  Order[]
+}
+
+model Address { 
+  id      Int @id @default(autoincrement())
+  houseNumber  Int
+  fistLine String @db.VarChar(225)
+  city    String  @db.VarChar(225)
+  county  String  @db.VarChar(225)
+  postcode  String  @db.VarChar(225)
+  country   String  @db.VarChar(225)
+  user    User  @relation(fields: [userId], references: [id])
+  userId    Int @unique
+}
+
+model Order { 
+  id Int @id @default(autoincrement())
+  product String @db.VarChar(225) 
+  description String @db.VarChar(225)
+  quantity Int
+  inStock Int 
+  createdAt DateTime @default(now())
+  estimateDelivery DateTime
+  user    User  @relation(fields: [userId], references: [id])
+  userId    Int 
+}
