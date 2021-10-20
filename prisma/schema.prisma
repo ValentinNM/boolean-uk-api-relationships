@@ -34,12 +34,29 @@ model Address {
 
 model Order { 
   id Int @id @default(autoincrement())
-  product String @db.VarChar(225) 
+  products ProductsAndOrders[]
   description String @db.VarChar(225)
-  quantity Int
-  inStock Int 
   createdAt DateTime @default(now())
   estimateDelivery DateTime
   user    User  @relation(fields: [userId], references: [id])
   userId    Int 
 }
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  price String
+  order ProductsAndOrders[]
+}
+
+model ProductsAndOrders { 
+  // id  Int   @default(autoincrement())
+  product Product @relation(fields: [productId], references:[id])
+  productId Int
+  order Order @relation(fields: [orderId], references:[id])
+  orderId Int
+
+  @@id([productId, orderId])
+}
+
+// model Inventory
